@@ -14,7 +14,8 @@ else:
   config.read(re.sub(f"src", "app.ini", path))
 
 def getRandom(dirs):
-    global imageWindow
+    if not dirs:
+        dirs = allDirectories([])
 
     weights = []
     dirSum = 0
