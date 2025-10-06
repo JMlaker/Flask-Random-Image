@@ -3,6 +3,7 @@ import os
 import shutil
 import re
 import ast
+from pathlib import Path
 
 from utils import allDirectories, getRandom, directoryMapper, path, config
 
@@ -110,10 +111,16 @@ def like_img():
     if not os.path.exists(f"{favourites_path}{img_folder}"):
         os.makedirs(f"{favourites_path}{img_folder}")
 
+    img_path = Path(directoryMapper(rel_img_path))
+    fav_img = Path(f"{favourites_path}{rel_img_path}")
+
     if img.get('liked'):
-        os.symlink(directoryMapper(rel_img_path), os.path.relpath(f"{favourites_path}{rel_img_path}"))
+        fav_img.symlink_to(os.path.relpath(img_path, start=f"{favourites_path}{os.sep}{img_folder}"))
     else:
-        os.remove(f"{favourites_path}{rel_img_path}")
+        try:
+            os.remove(f"{favourites_path}{rel_img_path}")
+        except:
+            pass
 
     return ''
 
