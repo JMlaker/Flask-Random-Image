@@ -2,225 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+	<meta name="description" content="Random Image Slideshow built with Flask">
+	<meta name="keywords" content="Flask, Images, Slideshow">
     <title>Random Image from External Folder</title>
-	<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        background-color: #f0f0f0;
-        font-family: Arial, sans-serif;
-    }
-
-    .page {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100vh; /* Full viewport height */
-		min-height: 100vh;
-    }
-
-    .content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-        box-sizing: content-box;
-		overflow: hidden;
-		min-height: 0;
-    }
-
-    #random-image {
-        max-width: 95vw;
-        max-height: 70vh; /* Slightly smaller to leave room */
-		height: auto;
-        object-fit: contain;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    #image-name {
-        margin-top: 15px;
-        font-size: 16px;
-        color: #444;
-    }
-
-    /* Button group sticks to bottom of screen */
-    .button-group {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        padding: 15px;
-        background-color: #fff;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-        border-top: 1px solid #eee;
-        z-index: 10;
-
-		position: absolute;
-		bottom: 0;
-		width: calc(100% - 30px);
-		left: 0;
-    }
-
-    .button-group button {
-        padding: 10px 20px;
-        font-size: 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        background-color: #007bff;
-        color: white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        transition: background-color 0.2s;
-    }
-	
-	.timer, .dir-item {
-		background-color: #f44336;
-		padding: 10px 20px;
-        font-size: 16px;
-		font-family: "Rubik";
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        color: white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        transition: background-color 0.2s;
-	}
-
-	.timer input, .dir-item input {
-		appearance: none;
-		-webkit-appearance: none;
-		position: absolute;
-		opacity: 0;
-		height: 0;
-		width: 0;
-	}
-
-	.timer:hover, .dir-item:hover {
-		background-color: #e53935;
-	}
-
-	.timer:has(input:checked), .dir-item:has(input:checked) {
-		background-color: #4CAF50 !important;
-	}
-
-	.timer:has(input:checked):hover, .dir-item:has(input:checked):hover {
-		background-color: #45a049 !important;
-	}
-
-	.dir-item {
-		display: block;
-		margin: 5px 0;
-		min-width: 130pt;
-	}
-
-	.button-group button:hover {
-        background-color: #0056b3;
-    }
-	
-	.directory-list, .timer-settings, .dir-type {
-		text-align: center;
-	}
-	
-	@supports (-webkit-touch-callout: none) {
-		p {
-			font-size: 20pt !important;
-		}
-
-		.button-group button, .spinner {
-			min-height: 44pt !important;
-			font-size: 20pt !important;
-		}
-
-		.spinner {
-			min-width: 220px !important;
-		}
-	
-		.dir-item {
-			min-height: 44pt !important;
-			font-size: 26pt !important;
-			min-width: 200pt !important;
-			touch-action: manipulation;
-		}
-
-		.spinner-btn {
-			touch-action: manipulation;
-		}
-	}
-
-	.button-group button:disabled {
-		background-color: #CCCCCC;
-		border-color: #999999;
-		color: #666666;
-	}
-
-	.directory-list-ov {
-		overflow-y: scroll;
-		height: calc(100% - 50px);
-		scrollbar-width: none;
-		-ms-overflow-style: none;
-		margin-top: -5px;
-	}
-
-	.directory-list-ov::-webkit-scrollbar {
-		display: none;
-	}
-
-	.settings-wrapper {
-		display: flex;
-		flex-direction: row;
-		gap: 15px;
-		height: 100%;
-	}
-
-	.spinner {
-		display: inline-flex;
-		align-items: center;
-		background-color: #FFFFFF; 
-		border-radius: 8px;
-		padding: 6.5px 12px;
-		color: black;
-		font-size: 16px;
-		font-weight: bold;
-		gap: 12px;
-		min-width: 130pt;
-		border-color: black;
-		border-width: 1px;
-		border-style: solid;
-	}
-
-	#spinner-value {
-		margin: auto;
-	}
-
-	.spinner-btn {
-		background: none;
-		border: none;
-		font-size: 20px;
-		cursor: pointer;
-		padding: 0 6px;
-	}
-
-	.spinner-btn:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
-	.form-container {
-		height: 0%;
-		flex: 1;
-	}
-
-	.directory-list {
-		height: calc(100% - 60px);
-	}
-	</style>	
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}" />
 </head>
 <body>
 	<div class="page">
@@ -228,15 +13,15 @@
 			{% if error %}
 			<p class="err">Wtf u doing bro, add some dirs fr fr</p>
 			{% endif %}
-			<form method="POST" class="form-container" id="dirs-form">
+			<form method="post" class="form-container" id="dirs-form">
 				<div class="settings-wrapper">
 					<div class="timer-settings">
 						<p>Timer Settings</p>
 						<div id="spinner" class="spinner">
-							<button type="button" class="spinner-btn" id="decrementBtn" onclick="decrement()">&#60;</button>
+							<button type="button" class="spinner-btn" id="decrementBtn" onclick="decrement()"><</button>
 							<span id="spinner-value">{{ timer }}</span>
 							<input type="hidden" name="timer" id="hiddenInput">
-							<button type="button" class="spinner-btn" onclick="increment()">&#62;</button>
+							<button type="button" class="spinner-btn" onclick="increment()">></button>
 						</div>
 					</div>
 					<div class="directory-list">
@@ -271,49 +56,5 @@
 		</div>
 	</div>
 </body>
-<script>
-	const time = document.getElementById('spinner-value');
-	const min_time = 500;
-	const down_btn = document.getElementById('decrementBtn');
-	let val = Number(time.textContent);
-
-	function decrement() {
-		if (val > min_time) val = val - 100;
-		if (val <= min_time) down_btn.disabled = true;
-		time.textContent = val;
-	}
-
-	function increment() {
-		if (val <= min_time) down_btn.disabled = false;
-		val = val + 100;
-		time.textContent = val;
-	}
-
-	document.getElementById('dirs-form').addEventListener('submit', () => {
-		document.getElementById('hiddenInput').value = val;
-	});
-
-	document.getElementById('spinner').addEventListener('wheel', (event) => {
-		if (event.deltaY > 0) decrement();
-		else increment();
-	});
-
-	document.querySelectorAll('input[name="favourite"]').forEach((radio) => {
-		radio.addEventListener('change', (event) => {
-			document.getElementById('hiddenInput').value = val;
-			const form = new FormData(document.getElementById('dirs-form'));
-
-			fetch("/get-favourites", {
-				method: 'POST',
-				body: form
-			}).then(response => {
-				if (response.redirected) window.location.href = response.url;	
-			});
-		});
-	});
-
-	window.addEventListener("load", () => {
-		if (val <= min_time) down_btn.disabled = true;
-	});
-</script>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/directories.js') }}"></script>
 </html>

@@ -1,0 +1,240 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100vh - 78px); /* Full viewport height */
+  min-height: calc(100vh - 78px);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  box-sizing: content-box;
+  overflow: hidden;
+  min-height: 0;
+}
+
+#random-image {
+  max-width: 95vw;
+  max-height: calc(100% - 20px); /* Slightly smaller to leave room */
+  height: auto;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button group sticks to bottom of screen */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 15px;
+  background-color: #fff;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-top: 1px solid #eee;
+  z-index: 10;
+
+  position: absolute;
+  bottom: 0;
+  width: calc(100% - 30px); /* -30px for padding */
+  left: 0;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+}
+
+.timer,
+.dir-item {
+  background-color: #f44336;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: "Rubik";
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+  text-align: center;
+  align-content: center;
+}
+
+label:has(> #like) {
+  margin-left: auto;
+}
+
+.timer input,
+.dir-item input {
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.timer:hover,
+.dir-item:hover {
+  background-color: #e53935;
+}
+
+.timer:has(input:checked),
+.dir-item:has(input:checked) {
+  background-color: #4caf50 !important;
+}
+
+.timer:has(input:checked):hover,
+.dir-item:has(input:checked):hover {
+  background-color: #45a049 !important;
+}
+
+.dir-item {
+  display: block;
+  margin: 5px 0;
+  min-width: 130pt;
+}
+
+.button-group button:hover {
+  background-color: #0056b3;
+}
+
+.trash {
+  background-color: #6d6d6d !important;
+  margin-right: auto;
+}
+
+.trash:hover {
+  background-color: #4f4f4f !important;
+}
+
+.directory-list,
+.timer-settings,
+.dir-type {
+  text-align: center;
+}
+
+.button-group button:disabled {
+  background-color: #cccccc;
+  border-color: #999999;
+  color: #666666;
+}
+
+.directory-list-ov {
+  overflow-y: scroll;
+  height: calc(100% - 50px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  margin-top: -5px;
+}
+
+.directory-list-ov::-webkit-scrollbar {
+  display: none;
+}
+
+.settings-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  height: 100%;
+}
+
+.spinner {
+  display: inline-flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 6.5px 12px;
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+  gap: 12px;
+  min-width: 130pt;
+  border-color: black;
+  border-width: 1px;
+  border-style: solid;
+}
+
+#spinner-value {
+  margin: auto;
+}
+
+.spinner-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 6px;
+}
+
+.spinner-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.form-container {
+  height: 0%;
+  flex: 1;
+}
+
+.directory-list {
+  height: calc(100% - 60px);
+}
+
+@supports (-webkit-touch-callout: none) {
+  p {
+    font-size: 20pt !important;
+  }
+
+  .timer,
+  .button-group button {
+    min-height: 44pt !important;
+    font-size: 20pt !important;
+    touch-action: manipulation;
+  }
+
+  #autoimg {
+    touch-action: manipulation;
+  }
+
+  .spinner {
+    min-width: 220px !important;
+  }
+
+  .dir-item {
+    min-height: 44pt !important;
+    font-size: 26pt !important;
+    min-width: 200pt !important;
+    touch-action: manipulation;
+  }
+
+  .spinner-btn {
+    touch-action: manipulation;
+  }
+}

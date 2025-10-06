@@ -3,7 +3,6 @@ import os
 import shutil
 import re
 import sys
-from PIL import Image, ImageTk
 import random
 import numpy
 from itertools import repeat
@@ -170,7 +169,7 @@ def like_img():
         os.makedirs(f"{favourites_path}{img_folder}")
 
     if img.get('liked'):
-        os.symlink(directoryMapper(rel_img_path), f"{favourites_path}{rel_img_path}")
+        os.symlink(directoryMapper(rel_img_path), os.path.relpath(f"{favourites_path}{rel_img_path}"))
     else:
         os.remove(f"{favourites_path}{rel_img_path}")
 
@@ -197,6 +196,6 @@ def get_favourites():
 
 # By default, start it on localhost:5000, but feel free to change it
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=5001, debug=True)
 
 
