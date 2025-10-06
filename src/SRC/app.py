@@ -106,21 +106,19 @@ def like_img():
     rel_img_path = os.sep.join(img.get('img').split(os.sep)[-2:]).split("?")[0]
     img_folder = rel_img_path.split(os.sep)[0]
 
-    favourites_path = f"{path}{os.sep}favourites{os.sep}"
+    favourites_path = Path(f"{path}{os.sep}favourites{os.sep}")
+    fav_folder = Path(f"{favourites_path}{os.sep}{img_folder}")
 
-    if not os.path.exists(f"{favourites_path}{img_folder}"):
-        os.makedirs(f"{favourites_path}{img_folder}")
+    if not os.path.exists(fav_folder):
+        os.makedirs(fav_folder)
 
     img_path = Path(directoryMapper(rel_img_path))
-    fav_img = Path(f"{favourites_path}{rel_img_path}")
+    fav_img = Path(f"{favourites_path}{os.sep}{rel_img_path}")
 
     if img.get('liked'):
-        fav_img.symlink_to(os.path.relpath(img_path, start=f"{favourites_path}{os.sep}{img_folder}"))
+        fav_img.symlink_to(os.path.relpath(img_path, start=fav_folder))
     else:
-        try:
-            os.remove(f"{favourites_path}{rel_img_path}")
-        except:
-            pass
+        fav_img.unlink()
 
     return ''
 
