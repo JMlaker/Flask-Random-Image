@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Image from External Folder</title>
+	<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+    }
+
+    .page {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: calc(100vh - 78px); /* Full viewport height */
+		min-height: calc(100vh - 78px);
+    }
+
+    .content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 10px;
+        box-sizing: content-box;
+		overflow: hidden;
+		min-height: 0;
+    }
+
+    #random-image {
+        max-width: 95vw;
+        max-height: calc(100% - 20px); /* Slightly smaller to leave room */
+		height: auto;
+        object-fit: contain;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Button group sticks to bottom of screen */
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        border-top: 1px solid #eee;
+        z-index: 10;
+
+		position: absolute;
+		bottom: 0;
+		width: calc(100% - 30px); /* -30px for padding */
+		left: 0;
+    }
+
+    .button-group button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: background-color 0.2s;
+    }
+	
+	.timer {
+		background-color: #EB4034;
+		padding: 10px 20px;
+        font-size: 16px;
+		font-family: "Rubik";
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: background-color 0.2s;
+		text-align: center;
+		align-content: center;
+	}
+
+	.timer input {
+		appearance: none;
+		-webkit-appearance: none;
+		position: absolute;
+		opacity: 0;
+		height: 0;
+		width: 0;
+	}
+
+	.timer:hover {
+		background-color: #B32F23;
+	}
+
+	.timer:has(input:checked) {
+		background-color: #52EB34 !important;
+	}
+
+	.timer:has(input:checked):hover {
+		background-color: #45AD31 !important;
+	}
+
+	@supports (-webkit-touch-callout: none) {
+		.timer, .button-group button {
+			min-height: 44pt !important;
+			font-size: 20pt !important;
+			touch-action: manipulation;
+		}
+		
+		#autoimg {
+			touch-action: manipulation;
+		}
+	}
+
+    .button-group button:hover {
+        background-color: #0056b3;
+    }
+
+	.trash {
+		background-color: #6D6D6D !important;
+	}
+
+	.trash:hover {
+		background-color: #4F4F4F !important;
+	}
+
+	</style>	
+</head>
+<body>
+	<div class="page">
+		<div class="content">
+			<img id="random-image" src="{{ url_for('serve_image', filename=image) }}" alt="Random Image">
+			<p><em id="random-image-name">{{ image_name }}</em></p>
+			<div class="button-group">
+				<button class="trash" style="margin-right:auto;" onclick="trash()">&#x1F5D1;</button>
+				<label class="timer">
+					<input id="autoimg" type="checkbox" name="timer" value="autoimg"><b>Timer</b>
+				</label>
+				<button onclick="loadNewImage()">Random!</button>
+				<button onclick="window.location.href = '/directories'">Settings</button>
+				<label class="timer" style="margin-left:auto;">
+					<input id="like" type="checkbox" name="like">&#x2661;
+				</label>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	let retryCount = 0;
+	const MAX_RETRIES = 3;
+
+	function loadNewImage() {
+		const timestamp = new Date().getTime();
+		const imgElement = document.getElementById('random-image');
+		const imgName = document.getElementById('random-image-name');
+
+		fetch('/random-image-url')
+			.then(response => response.json())
+			.then(data => { 
+				const img = new Image();
+
+				img.onload = () => {
+					imgElement.src = data.url + '?t=' + timestamp;
+					imgName.textContent = data.filename;
+					retryCount = 0;
+				};
+				img.onerror = () => {
+					console.warn("Image fetch failed; trying again");
+					retryIMG();
+				};
+				img.src = data.url;
+			})
+			.catch(err => console.error('Failed to load new image:', err));
+	}
+
+	function retryIMG() {
+		retryCount++;
+		if (retryCount < MAX_RETRIES) {
+			setTimeout(loadNewImage(), 5*retryCount);
+		} else {
+			retryCount = 0;
+		}
+	}
+
+	function trash() {
+		const image = document.getElementById("random-image").src;
+
+		fetch('/trash-image', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({img: image})
+		});
+
+		loadNewImage();
+	}
+
+	let imgLoopId = null;
+
+	document.getElementById('autoimg').addEventListener('change', function() {
+		if (this.checked) {
+			imgLoopId = window.setInterval(loadNewImage, {{ timer }});
+		} else {
+			window.clearInterval(imgLoopId);
+		}
+	});
+
+	document.getElementById('random-image').addEventListener('load', () => {
+		const image = document.getElementById("random-image").src;
+
+		fetch('/is-liked-img', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({img: image})
+		})
+			.then(response => response.json())
+			.then(response => {
+				document.getElementById('like').checked = response.liked;
+			});
+	});
+
+	document.getElementById('like').addEventListener('change', (e) => {
+		const image = document.getElementById("random-image").src;
+
+		fetch('/like-img', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({img: image, liked: e.target.checked})
+		});
+	});
+</script>
+</html>
