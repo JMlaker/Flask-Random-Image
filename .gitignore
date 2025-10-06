@@ -1,1 +1,4 @@
 **/.vscode
+**/__pycache__
+**/rand_venvi
+/app.dev.ini
