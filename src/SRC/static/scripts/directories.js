@@ -40,4 +40,8 @@ document.querySelectorAll('input[name="favourite"]').forEach((radio) => {
 
 window.addEventListener("load", () => {
   if (val <= min_time) down_btn.disabled = true;
+
+  if (window.matchMedia('(display-mode: standalone)').matched || window.navigator.standalone === true) {
+    this.document.querySelectorAll(".app").forEach(i => i.classList.add("webapp"));
+  }
 });

@@ -7,7 +7,7 @@
     <title>Random Image from External Folder</title>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}" />
 </head>
-<body>
+<body class="app">
 	<div class="page">
 		<div class="content">
 			{% if error %}
@@ -48,7 +48,7 @@
 						</label>
 					</div>
 				</div>
-				<div class="button-group">
+				<div id="bottom-bar" class="button-group">
 					<button type="submit">Back & Save</button>
 					<button type="button" onclick="window.location.href='/';" {{ 'disabled' if error else '' }}>Cancel</button>
 				</div>

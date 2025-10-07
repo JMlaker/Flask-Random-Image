@@ -7,12 +7,12 @@
     <title>Random Image from External Folder</title>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}" />
 </head>
-<body>
+<body class="app">
 	<div class="page">
 		<div class="content">
-			<img id="random-image" src="{{ url_for('serve_image', filename=image) }}" alt="Random Image">
+			<img id="random-image" src="{{ url_for('serve_image', filename=image) }}" alt="Random Image" onclick="loadNewImage()">
 			<p><em id="random-image-name">{{ image_name }}</em></p>
-			<div class="button-group">
+			<div id="bottom-bar" class="button-group">
 				<button class="trash" onclick="trash()">🗑</button>
 				<label class="timer">
 					<input id="autoimg" type="checkbox" name="timer" value="autoimg"><b>Timer</b>

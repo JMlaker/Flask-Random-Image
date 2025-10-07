@@ -100,4 +100,8 @@ document.getElementById("like").addEventListener("change", (e) => {
 
 window.onload = function() {
 	for (let i = 0; i < 5; i++) fetchNewImage();
+
+  if (window.matchMedia('(display-mode: standalone)').matched || window.navigator.standalone === true) {
+    this.document.querySelectorAll(".app").forEach(i => i.classList.add("webapp"));
+  }
 }
