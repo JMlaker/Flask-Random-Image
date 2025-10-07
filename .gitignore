@@ -2,4 +2,5 @@
 **/__pycache__
 **/rand_venvi
 /app.dev.ini
+.DS_Store
 **/.DS_Store
