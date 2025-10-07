@@ -18,9 +18,10 @@ def index():
     selected_dirs = session.get('selected_directories', directories)
     timer = session.get('timer', 2500)
 
-    img = re.sub(f"src{os.sep}", "", os.path.relpath(getRandom(selected_dirs)))
-    image_name = re.sub(f"..{os.sep}..{os.sep}", "", img)
-    return render_template('index.html', image=img, timer=timer, image_name=image_name)
+    image = getRandom(selected_dirs)
+    print(image)
+    img = os.sep.join(image.split(os.sep)[-2:])
+    return render_template('index.html', image=img, timer=timer, image_name=img)
 
 @app.route("/image/<path:filename>")
 def serve_image(filename):
@@ -34,7 +35,8 @@ def serve_image(filename):
 def random_image_url():
     selected_dirs = session.get('selected_directories', directories)
     
-    img = re.sub(f"src{os.sep}", "", os.path.relpath(getRandom(selected_dirs)))
+    image = getRandom(selected_dirs)
+    img = os.sep.join(image.split(os.sep)[-2:])
     url = url_for('serve_image', filename=img)
     return jsonify({"url": url, "filename": re.sub("/image/", "", url)})
 
@@ -73,9 +75,7 @@ def change_directory():
         favourite = int(request.form.get('favourite'))
         session['favourite'] = favourite
         if selected_dirs:
-            img = re.sub(f"src{os.sep}", "", os.path.relpath(getRandom(selected_dirs)))
-            image_name = re.sub(f"..{os.sep}..{os.sep}", "", img)
-            return render_template('index.html', image=img, timer=timer, image_name=image_name)
+            return redirect(url_for('index'))
         else:
             return render_template('directories.html', directories=dir_list, selected=selected_dirs, timer=timer, favourite=favourite, error=True)
     

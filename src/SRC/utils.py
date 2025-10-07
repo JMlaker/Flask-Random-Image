@@ -14,6 +14,8 @@ if os.path.exists(re.sub(f"src", "app.dev.ini", path)):
 else:
   config.read(re.sub(f"src", "app.ini", path))
 
+path = Path(config.get("IMAGES", "dir", fallback=path))
+
 def getRandom(dirs):
     if not dirs:
         dirs = [Path(f"{re.sub(f"{os.sep}SRC{os.sep}utils.py", "", __file__)}{os.sep}fallback")]
