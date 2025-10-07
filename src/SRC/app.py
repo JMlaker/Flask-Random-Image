@@ -33,8 +33,6 @@ def serve_image(filename):
 @app.route("/random-image-url")
 def random_image_url():
     selected_dirs = session.get('selected_directories', directories)
-    timer = session.get('timer', 2500)
-    favourite = session.get('favourite', 0)
     
     img = re.sub(f"src{os.sep}", "", os.path.relpath(getRandom(selected_dirs)))
     url = url_for('serve_image', filename=img)

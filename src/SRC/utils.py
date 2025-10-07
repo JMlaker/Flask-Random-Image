@@ -4,6 +4,7 @@ import numpy
 import re
 from itertools import repeat
 from configparser import ConfigParser
+from pathlib import Path
 
 path = re.sub(f"{os.sep}SRC{os.sep}utils.py", "", __file__)
 
@@ -15,7 +16,8 @@ else:
 
 def getRandom(dirs):
     if not dirs:
-        dirs = allDirectories([])
+        dirs = [Path(f"{re.sub(f"{os.sep}SRC{os.sep}utils.py", "", __file__)}{os.sep}fallback")]
+        print(dirs)
 
     weights = []
     dirSum = 0
@@ -47,7 +49,7 @@ def allDirectories(dir = [], img_path = path):
     global path
 
     # These have to be in here, but feel free to add some more
-    remove_dirs = ['favourites', 'trash', 'SRC'];
+    remove_dirs = ['favourites', 'trash', 'SRC', 'fallback'];
     
     for i in [item.strip() for item in config.get("EXCLUDED-DIRS", "list", fallback=[]).split(", ")]:
         remove_dirs.append(i)
