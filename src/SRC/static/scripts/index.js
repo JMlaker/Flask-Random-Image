@@ -1,10 +1,22 @@
 let retryCount = 0;
 const MAX_RETRIES = 3;
 
+const preloadedImages = [];
+const preloadedNames = [];
+
 function loadNewImage() {
+	const imgElement = document.getElementById("random-image");
+	const imgName = document.getElementById("random-image-name");
+
+	const newImage = preloadedImages.shift();
+	imgElement.src = newImage.src;
+	imgName.textContent = preloadedNames.shift();
+
+	fetchNewImage();
+}
+
+function fetchNewImage() {
   const timestamp = new Date().getTime();
-  const imgElement = document.getElementById("random-image");
-  const imgName = document.getElementById("random-image-name");
 
   fetch("/random-image-url")
     .then((response) => response.json())
@@ -12,15 +24,15 @@ function loadNewImage() {
       const img = new Image();
 
       img.onload = () => {
-        imgElement.src = data.url + "?t=" + timestamp;
-        imgName.textContent = data.filename;
+		preloadedImages.push(img)
+		preloadedNames.push(data.filename);
         retryCount = 0;
       };
       img.onerror = () => {
         console.warn("Image fetch failed; trying again");
         retryIMG();
       };
-      img.src = data.url;
+      img.src = data.url + "?t=" + timestamp;
     })
     .catch((err) => console.error("Failed to load new image:", err));
 }
@@ -85,3 +97,7 @@ document.getElementById("like").addEventListener("change", (e) => {
     body: JSON.stringify({ img: image, liked: e.target.checked }),
   });
 });
+
+window.onload = function() {
+	for (let i = 0; i < 5; i++) fetchNewImage();
+}
