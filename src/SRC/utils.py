@@ -14,7 +14,10 @@ if os.path.exists(re.sub(f"src", "app.dev.ini", path)):
 else:
   config.read(re.sub(f"src", "app.ini", path))
 
-path = Path(config.get("IMAGES", "dir", fallback=path))
+conf_path = Path(config.get("IMAGES", "dir", fallback=path))
+if not os.path.exists(conf_path):
+    print("Config path could not be found. Make sure it's an absolute path and the path exists.\nUsing default path (images in this repo).")
+    conf_path = path
 
 def getRandom(dirs):
     if not dirs:
